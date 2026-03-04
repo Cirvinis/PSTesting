@@ -3,7 +3,7 @@ name: Scheduled Playwright Suite
 on:
   schedule:
     # Runs daily at 14:32 GMT+2 (12:32 UTC)
-    - cron: '35 12 * * *'
+    - cron: '0 13 * * *'
   workflow_dispatch:
 
 jobs:
@@ -43,7 +43,6 @@ jobs:
           EOF
 
       - name: Run scheduled suite
-        continue-on-error: true
         run: |
           npx playwright test tests/2_2.spec.js tests/3_1.spec.js tests/3_2.spec.js
 
