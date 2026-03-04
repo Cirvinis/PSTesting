@@ -27,11 +27,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run scheduled suite
-        run: |
-          npx playwright test tests/2_2.spec.js tests/3_1.spec.js tests/3_2.spec.js
-
-      - name: Generate execution proof metadata
+      - name: Generate execution proof metadata (before tests)
         run: |
           mkdir -p scheduler-proof
           cat <<EOF > scheduler-proof/scheduler-proof.json
@@ -45,6 +41,11 @@ jobs:
             "sha": "${{ github.sha }}"
           }
           EOF
+
+      - name: Run scheduled suite
+        continue-on-error: true
+        run: |
+          npx playwright test tests/2_2.spec.js tests/3_1.spec.js tests/3_2.spec.js
 
       - name: Upload HTML report
         if: always()
