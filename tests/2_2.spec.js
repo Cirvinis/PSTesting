@@ -28,9 +28,8 @@ test('web tables pagination returns to first page after delete on second page', 
 	await page.getByRole('button', { name: 'Next' }).click();
 	await expect(pageInfo).toHaveText('2 of 2');
 
-	const deleteButton = page.locator('span[title="Delete"]').first();
-	await deleteButton.scrollIntoViewIfNeeded();
-	await page.click('span[title="Delete"]', { force: true });
+	// Use dispatchEvent to bypass ad iframe overlay that blocks pointer events in CI
+	await page.locator('span[title="Delete"]').first().dispatchEvent('click');
 
 	await expect(pageInfo).toHaveText('1 of 1', { timeout: 10000 });
 	await expect(page.getByRole('button', { name: 'Next' })).toBeDisabled();
