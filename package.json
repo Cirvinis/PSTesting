@@ -1,0 +1,17 @@
+{
+  "name": "pstesting",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:task4_1": "playwright test tests/4_1.spec.js",
+    "test:scheduled": "playwright test tests/2_2.spec.js tests/3_1.spec.js tests/3_2.spec.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.2.3"
+  }
+}

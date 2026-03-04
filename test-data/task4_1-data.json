@@ -1,0 +1,13 @@
+{
+  "baseUrl": "https://demowebshop.tricentis.com/",
+  "user": {
+    "firstName": "Auto",
+    "lastName": "Tester",
+    "email": "pstesting.demo.user@example.com",
+    "password": "P@ssw0rd123"
+  },
+  "searchTerms": [
+    "Computing and Internet",
+    "14.1-inch Laptop"
+  ]
+}
