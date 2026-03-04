@@ -2,7 +2,7 @@ name: Scheduled Playwright Suite
 
 on:
   schedule:
-    # Runs daily at 14:32 GMT+2 (12:32 UTC)
+    # Runs daily at 16:00 GMT+2 (14:00 UTC)
     - cron: '0 14 * * *'
   workflow_dispatch:
 

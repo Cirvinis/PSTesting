@@ -29,7 +29,8 @@ test('web tables pagination returns to first page after delete on second page', 
 	await expect(pageInfo).toHaveText('2 of 2');
 
 	await page.locator('span[title="Delete"]').first().click({ force: true });
+	// Wait for page count to update after deletion (needed in CI, not locally)
+	await expect(pageInfo).toHaveText('1 of 1', { timeout: 10000 });
 
-	await expect(pageInfo).toHaveText('1 of 1');
 	await expect(page.getByRole('button', { name: 'Next' })).toBeDisabled();
 });
