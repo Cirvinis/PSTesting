@@ -83,7 +83,7 @@ test('task 4.1 data-driven workflow with preconditions and postconditions', asyn
     }
   });
 
-  await test.step('Verify cart has at least two items', async () => {
+  await test.step('Verify cart has the searchTerms.length amount of items', async () => {
     const headerLinks = page.locator('.header-links');
     await headerLinks.getByRole('link', { name: /^Shopping cart(?:\s*\(\d+\))?$/i }).click();
 
