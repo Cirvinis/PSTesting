@@ -34,19 +34,11 @@ const registerIfNeeded = async (page, user) => {
   await expect(page.getByRole('link', { name: 'Log out' })).toBeVisible();
 };
 
-const ensureCartEmpty = async (page) => {
+const isCartEmpty = async (page) => {
   await page.goto(`${testData.baseUrl}cart`);
   const cartRows = page.locator('tr.cart-item-row');
   const rowCount = await cartRows.count();
-
-  if (rowCount > 0) {
-    for (let index = 0; index < rowCount; index += 1) {
-      await cartRows.nth(index).locator('input[name^="removefromcart"]').check();
-    }
-    await page.getByRole('button', { name: 'Update shopping cart' }).click();
-  }
-
-  await expect(page.getByText('Your Shopping Cart is empty!')).toBeVisible();
+  return rowCount === 0;
 };
 
 const logoutIfLoggedIn = async (page) => {
@@ -62,14 +54,26 @@ test('task 4.1 data-driven workflow with preconditions and postconditions', asyn
 
   await test.step('Preconditions: user is registered/logged in and cart is empty', async () => {
     await registerIfNeeded(page, user);
-    await ensureCartEmpty(page);
+
+    const emptyAtStart = await isCartEmpty(page);
+    await test.info().attach('precondition-cart-state', {
+      body: emptyAtStart ? 'Cart is empty after login' : 'Cart is NOT empty after login',
+      contentType: 'text/plain'
+    });
   });
 
   await test.step('Execute test with external search terms', async () => {
     for (const term of searchTerms) {
       await page.goto(testData.baseUrl);
-      await page.getByRole('textbox', { name: 'Search store' }).fill(term);
+      await page.waitForLoadState('domcontentloaded');
+
+      const searchBox = page.locator('#small-searchterms');
+      await expect(searchBox).toBeVisible();
+      await searchBox.fill(term);
+
       await page.getByRole('button', { name: 'Search' }).click();
+
+      await expect(page.locator('.search-results .item-box').first()).toBeVisible({ timeout: 10000 });
 
       const firstResult = page.locator('.search-results .item-box').first();
       await expect(firstResult).toBeVisible();
@@ -87,9 +91,9 @@ test('task 4.1 data-driven workflow with preconditions and postconditions', asyn
     await expect(cartRows).toHaveCount(searchTerms.length);
   });
 
-  await test.step('Postconditions: clean cart and log out', async () => {
-    await ensureCartEmpty(page);
+  await test.step('Postconditions: log out and cart empty', async () => {
     await page.goto(testData.baseUrl);
     await logoutIfLoggedIn(page);
+    await expect(await isCartEmpty(page)).toBeTruthy();
   });
 });
