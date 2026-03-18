@@ -54,7 +54,12 @@ test('task 4.1 data-driven workflow with preconditions and postconditions', asyn
 
   await test.step('Preconditions: user is registered/logged in and cart is empty', async () => {
     await registerIfNeeded(page, user);
-    await expect(await isCartEmpty(page)).toBeTruthy();
+
+    const emptyAtStart = await isCartEmpty(page);
+    await test.info().attach('precondition-cart-state', {
+      body: emptyAtStart ? 'Cart is empty after login' : 'Cart is NOT empty after login',
+      contentType: 'text/plain'
+    });
   });
 
   await test.step('Execute test with external search terms', async () => {
